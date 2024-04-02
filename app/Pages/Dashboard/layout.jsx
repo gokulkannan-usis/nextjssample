@@ -11,16 +11,16 @@ export default function DashboardLayout({children}) {
   }
   return (
     <section>
-      <h1>A href working </h1>
+      {/* <h1>A href working </h1>
          <a href="/Pages/Dashboard"><h1>Dashboar</h1> </a>
         <a href="/Pages/Dashboard/Home">Home              </a> 
         <a href="/Pages/Dashboard/About">            About            </a> 
         <a href="/Pages/Dashboard/Settings">              Setting        </a>
 
     <br />
-    <br />
+    <br /> */}
 
-        <h1>Link Working</h1>
+        {/* <h1>Link Working</h1>
          <Link href="/Pages/Dashboard"><h1>Dashboar</h1> </Link>
         <Link href="/Pages/Dashboard/Home">Home              </Link> 
         <Link href="/Pages/Dashboard/About">            About            </Link> 
@@ -28,12 +28,12 @@ export default function DashboardLayout({children}) {
 
 
         <br />
-        <br />
+        <br /> */}
 
-        <h1>Routing Function</h1>
-        <button onClick={home}>Home</button>
+        {/* <h1>Routing Function</h1> */}
+        {/* <button onClick={home}>Home</button> */}
         {children}
-        <h1>Fotter</h1>
+        {/* <h1>Fotter</h1> */}
     </section>
   );
 }
