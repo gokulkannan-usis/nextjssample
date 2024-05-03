@@ -53,3 +53,176 @@ body {
   border: 1px solid #000; 
   padding: 8px; 
 }
+
+.wrapper{
+  width: 90%;
+}
+.body{
+  width: 100%;
+  margin: 0 10px;
+}
+.job-wrpper{
+  background-color: #fff;
+  border-radius: 10px;
+  min-width: 100%;
+  padding: 10px;
+}
+.job-header{
+  display: flex;
+  align-items: center;
+}
+.job-header div{
+padding-left: 10px;
+}
+.job-header div p{
+  color: #000;
+  font-weight: 600;
+  font-size: 12px;
+}
+.job-header div span{
+  color: #4A5568;
+  font-weight: 400;
+  font-size: 12px;
+}
+.job-body{
+  display: flex;
+  align-items: center;
+  padding-top: 10px;
+}
+.job-body span{
+  padding-left: 10px;
+  color: #000000;
+  font-weight: 400;
+  font-size: 12px;
+}
+.job-body-des{
+  padding-left: 10px;
+  color: #000000;
+  font-weight: 600;
+  font-size: 14px;
+}
+.postby{
+  padding-top: 10px;
+  color: #4A5568;
+  font-weight: 400;
+  font-size: 12px;
+}
+.job-wrpper{
+  margin: 10px 0;
+}
+.job-wrpper.details{
+  margin-top: 2rem;
+}
+.details .singleline{
+  display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+}
+
+.details .job-header{
+  display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    
+}
+.details .job-header img{
+  width: 48px;
+}
+
+.details .job-header div{ padding: unset;}
+.job-card{
+  display: flex;
+  justify-content: space-between;
+}
+.job-card .job-wrppernew{
+  background-color: #fff;
+  border-radius: 10px;
+  padding: 10px;
+  width: 100%;
+  margin-right: 10px;
+}
+.job-card .job-wrppernew:last-child {
+  margin-right: 0;
+}
+.Requirementscard .job-body.tag{
+  margin-bottom: 15px;
+}
+.Requirementscard .job-body.tag span{
+  background-color: #F7FAFC;
+  border-radius: 20px;
+  padding: 10px;
+  margin-right: 10px;
+}
+.Requirementscard .job-body span{
+  padding-left: unset;
+}
+.btn{
+  text-align: center;
+ margin: 1rem;
+
+}
+
+.btn button{
+  background-color: #2D9BD8;
+  padding: 5px 24px;
+  border-radius: 6px;
+  font-size: 18px;
+  color: #fff;
+  font-weight: 600;
+}
+
+.header.wrapper{
+  padding: 10px;
+    background: #fff;
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+
+}
+.header.wrapper button{
+  background: blue;
+    color: #ffff;
+    font-size: 12px;
+    padding: 9px 15px;
+    border-radius: 50px;
+}
+.header.wrapper input{
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 0 10px;
+  min-width: 40%;
+}
+.header.wrapper select{
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 0 10px;
+  min-width: 40%;
+}
+.Fillter{
+  width: 100%;
+}
+.Fillter-wrapper{
+  width: 100%;
+  display: flex;
+  padding: 0 50px;
+}
+.Fillter-left{
+  width: 25%;
+  background: #fff;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+  height: 700px;
+  margin-right: 20px;
+}
+.Fillter-right{
+  width: 75%;
+  background: #fff;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+  height: 700px;
+}
+.heading h3{
+  padding:5px 15px;
+}
+

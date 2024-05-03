@@ -1,94 +1,249 @@
+
+
+
 "use client"
 import { db } from './firbaseconfig';
-import { collection, addDoc } from 'firebase/firestore';
-import React, { useState } from 'react';
-import { useRouter } from "next/navigation";
+import { collection, getDocs } from 'firebase/firestore';
+import React, { useEffect, useState } from 'react';
+import './globals.css';
+import Link from 'next/link';
+import Image from 'next/image';
+// import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
+// import { useEffect, useState } from 'react';
 
-async function AddDatatoFirebase(name:any, email:any, password:any, message:any) {
-  try {
-    const docRef = await addDoc(collection(db, "Message"), {
-      name: name,
-      password: password,
-      email: email,
-      message: message
-    });
-    return true;
-  } catch (error) {
-    console.error("error", error)
-    return false;
+
+
+
+async function fetchDataFromFirestore() {
+  const querySnapshot = await getDocs(collection(db, "jobs"));
+  const data: any = [];
+  querySnapshot.forEach((doc) => {
+    const message: any = { id: doc.id, ...doc.data() };
+    data.push({ id: doc.id, ...doc.data() });
+  });
+  return data;
+}
+
+
+
+function formatTimeRange(start_time: any, end_time: any) {
+  if (!start_time || !start_time.seconds || !end_time || !end_time.seconds) {
+    return " time not mention";
+  }
+  const options: any = { hour: 'numeric', minute: 'numeric', hour12: true };
+  const startDate = new Date(start_time.seconds * 1000);
+  const endDate = new Date(end_time.seconds * 1000);
+
+  const formattedStartTime = startDate.toLocaleTimeString('en-US', options);
+  const formattedEndTime = endDate.toLocaleTimeString('en-US', options);
+
+  return `${formattedStartTime} - ${formattedEndTime}`;
+}
+
+
+
+
+function formatPostedTime(publish_time: any) {
+  const timestamp = publish_time;
+  const milliseconds = timestamp.seconds * 1000 + timestamp.nanoseconds / 1000000;
+  const date = new Date(milliseconds);
+  const postDate = new Date(date);
+  const currentDate = new Date();
+  const timeDifference = currentDate.getTime() - postDate.getTime();
+  const daysDifference = Math.floor(timeDifference / (1000 * 3600 * 24));
+  if (daysDifference === 0) {
+    return "Posted today";
+  } else if (daysDifference === 1) {
+    return "Posted 1 day ago";
+  } else {
+    return `Posted ${daysDifference} days ago`;
   }
 }
 
-export default function Home() {
-  const router = useRouter();
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [message, setMessage] = useState("");
 
-  const isFormValid = name !== '' && email !== '' && password !== '' && message !== '';
+export default function Dashboard() {
+  const router:any = useRouter();
+  const [userData, setUserData] = useState([]);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedLocation, setSelectedLocation] = useState<string>('');
+  const [selectedSalaryRange, setSelectedSalaryRange] = useState<string>('');
+  useEffect(() => {
+    async function fetchData() {
+      const data = await fetchDataFromFirestore();
+      setUserData(data);
+      console.log("time", data)
+    }
+    fetchData();
+  }, []);
 
-  const submit = async (e:any) => {
+
+  useEffect(() => {
+    const queryParams:any = {};
+    if (searchQuery) queryParams.search = searchQuery;
+    if (selectedLocation) queryParams.location = selectedLocation;
+    if (selectedSalaryRange) queryParams.salary = selectedSalaryRange;
+    if (typeof router.pathname === 'string') {
+      router.push({
+        pathname: router.pathname,
+        query: queryParams,
+      });
+    }
    
-    e.preventDefault();
-    if (!isFormValid) {
+    console.log("comapny",searchQuery)
+    console.log("Location",selectedLocation)
+    console.log("Salary",selectedSalaryRange)
+  }, [searchQuery, selectedLocation, selectedSalaryRange]);
+
+  useEffect(() => {
+    async function fetchData() {
+      const data = await fetchDataFromFirestore();
+      setUserData(data);
+    }
+    fetchData();
+  }, [router.query]);
+
+
+
+  const salaryRanges = [
+    "0 - 10000",
+    "10001 - 20000",
+    "20001 - 30000",
+    "30001 - 40000",
+    "40001 - 50000",
+    
+  ];
+
+
+  const handleSearch = () => {
+    if (!searchQuery) {
+      alert('Please enter a search query.');
       return;
     }
-    const added = await AddDatatoFirebase(name, email, password, message);
-    if (added) {
-      setName("");
-      setEmail("");
-      setPassword("");
-      setMessage("");
-      alert("Firebase upload successful");
-      router.push('/Pages/Dashboard');
+
+    const queryParams = new URLSearchParams();
+    queryParams.set('search', searchQuery);
+    if (selectedLocation) {
+      queryParams.set('location', selectedLocation);
     }
-  }
+  
+    const queryString = queryParams.toString();
+  
+    if (queryString) {
+      router.push(`/Pages/Filter?${queryString}`);
+    } else {
+      router.push('/Pages/Filter');
+    }
+};
+
+
+  
+
+
+  // const filteredData = userData.filter((job: any) => {
+  //   const companyMatches = job.title.toLowerCase().includes(searchQuery.toLowerCase());
+  //   const locationMatches = !selectedLocation || job.location === selectedLocation;
+  //   const salaryMatches = !selectedSalaryRange ||
+  //   (
+  //     !isNaN(job.start_salary) && !isNaN(job.end_salary) &&
+  //     job.start_salary >= parseInt(selectedSalaryRange.split('-')[0]) &&
+  //     job.end_salary <= parseInt(selectedSalaryRange.split('-')[1])
+  //   );
+
+    
+
+  //   return companyMatches && locationMatches && salaryMatches;
+  // });
+
 
   return (
-    <main className=" items-center justify-between p-24">
-      {/* <h1 className="mb-4  text-4xl font-extrabold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl dark:text-white">Sample Poc in Next.js</h1> */}
-      
-      <form onSubmit={submit} className='max-w-md mx-auto p-4 bg-white shadow-md rounded-lg '>
-        <div className='mb-4'>
-          <label htmlFor="name" className='block text-gray-700 font-bold mb-2'>Name</label>
-          <input type="text" id="name" value={name}
-            onChange={(e) => setName(e.target.value)}
-            className='w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-blue-500'
-          />
-        </div>
-        <div className='mb-4'>
-          <label htmlFor="email" className='block text-gray-700 font-bold mb-2'>Email</label>
-          <input type="text" id="email" value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className='w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-blue-500'
-          />
-        </div>
 
-        <div className='mb-4'>
-          <label htmlFor="password" className='block text-gray-700 font-bold mb-2'>Password</label>
-          <input type="password" id="password" value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className='w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-blue-500'
-          />
+
+    <main className="flex min-h-screen flex-col items-center justify-between">
+      <h1>Firebase Data</h1>
+
+
+
+      <div className="wrapper">
+        <div className="header wrapper">
+
+        <input
+          type="text"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          placeholder="Search"
+        />
+          <select value={selectedLocation} onChange={(e) => setSelectedLocation(e.target.value)}>
+          <option value="">All Locations</option>
+          {Array.from(new Set(userData.map((job: any) => job.location))).map(location => (
+            <option key={location} value={location}>
+              {location}
+            </option>
+          ))}
+        </select>
+        <button onClick={handleSearch}>Search</button>
+          
         </div>
-        <div className='mb-4'>
-          <label htmlFor="message" className='block text-gray-700 font-bold mb-2'>Message</label>
-          <textarea
-            rows={5}
-            id="message" value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            className='w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-blue-500'
-          ></textarea>
+        <div className="body">
+          {userData.map((message: any) => (
+
+
+            <div className="job-wrpper" key={message.id}>
+              <Link href={`Pages/Jobs/Job-details/${message.id}`}>
+                <div className="job-header">
+                  {/* <Image src="https://flowbite.com/docs/images/logo.svg" width={32} height={32} alt="Logo"/> */}
+                  {/* <Image src={message.image} width={32} height={32} alt="Logo"/> */}
+                  {message.image ? (
+                    <Image src={message.image} width={32} height={32} alt="Company" />
+                  ) : (
+                    <Image src="https://flowbite.com/docs/images/logo.svg" width={32} height={32} alt="Default Company Logo" />
+                  )}
+                  <div>
+                    <p>{message.title}</p>
+                    <span>{message.title}</span>
+                  </div>
+                </div>
+
+                <div className="job-body">
+                  <Image src="/icon/map-pin.svg" width={16} height={16} alt="Logo" />
+                  <span> {message.location}</span>
+                </div>
+                <div className="job-body">
+                  <Image src="/icon/clock.svg" width={16} height={16} alt="Logo" />
+                  {/* <span>{formatTime(message.start_time)} - 7:00pm Mon - Fri</span> */}
+
+                  <span>{formatTimeRange(message.start_time, message.end_time)}  {message.working_days}</span>
+
+                </div>
+                <div className="job-body">
+                  <Image src="/icon/wallet.svg" width={16} height={16} alt="Logo" />
+                  <span>₹ {message.start_salary} - {message.end_salary} per month</span>
+                </div>
+                <div className="postby">
+                  {/* <span>Posted 2 days ago</span> */}
+                  <span>{formatPostedTime(message.publish_time)}</span>
+                </div>
+              </Link>
+            </div>
+          ))}
         </div>
-        <div className='text-center'>
-          <button type='submit'
-            disabled={!isFormValid}
-            className={`bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-2 rounded-lg ${isFormValid ? '' : 'cursor-not-allowed opacity-50'}`}>
-            Submit
-          </button>
+      </div>
+
+      <div className="container my-12 mx-auto px-4 md:px-12">
+        <div className="flex flex-wrap -mx-1 lg:-mx-4">
+
+
+
+
         </div>
-      </form>
+      </div>
+
+
+
+
+
+
+
     </main>
   );
 }

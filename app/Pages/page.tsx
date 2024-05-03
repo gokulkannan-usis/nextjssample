@@ -1,9 +1,18 @@
-import Image from "next/image";
+"use client"
+import { useRouter } from "next/navigation";
+// import { useRouter } from "next/router";
+// import { useRouter } from 'next/compat/router'
 
-export default function Page() {
-  return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-     <h1>Page</h1>
-    </main>
-  );
+export default function Details() {
+    const router:any = useRouter();
+    const { search, location } = router.query || {};
+    console.log("test",router.query);
+
+    return (
+        <div>
+            <h1>About details: {search}</h1>
+            <p>Location: {location}</p>
+        </div>
+    );
 }
+
