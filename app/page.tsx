@@ -47,6 +47,8 @@ export default function Home() {
 
   return (
     <main className=" items-center justify-between p-24">
+      {/* <h1 className="mb-4  text-4xl font-extrabold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl dark:text-white">Sample Poc in Next.js</h1> */}
+      
       <form onSubmit={submit} className='max-w-md mx-auto p-4 bg-white shadow-md rounded-lg '>
         <div className='mb-4'>
           <label htmlFor="name" className='block text-gray-700 font-bold mb-2'>Name</label>
